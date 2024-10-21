@@ -1,0 +1,14 @@
+steps:
+# Build the container image
+- name: 'gcr.io/cloud-builders/docker'
+  args: ['build', '-t', 'us-central1-docker.pkg.dev/infinite-bruin-439311-d5/demo-registry/nginx-demo:$BUILD_ID', '-f', 'web.Dockerfile', '.']
+# Push the container image to Container Registry
+- name: 'gcr.io/cloud-builders/docker'
+  args: ['push', 'us-central1-docker.pkg.dev/infinite-bruin-439311-d5/demo-registry/nginx-demo:$BUILD_ID']
+# Deploy container image to Cloud Run
+- name: 'gcr.io/cloud-builders/gcloud'
+  args: ['run', 'deploy', 'nginx-demo-deploy', '--image,', 'us-central1-docker.pkg.dev/infinite-bruin-439311-d5/demo-registry/nginx-demo:$BUILD_ID', '--port', '8080', '--service-account' , '760413987283-compute@developer.gserviceaccount.com','--network' , 'default-vpc', '--subnet', 'frontend',  '--network-tags', 'allow-http', '--region', 'us-central1', '--platform', 'managed', '--allow-unauthenticated', '--vpc-egress', 'all-traffic', '--ingress', 'internal-and-cloud-load-balancing', '--project', 'infinite-bruin-439311-d5', '--region', 'us-central1', ]
+images:
+- us-central1-docker.pkg.dev/infinite-bruin-439311-d5/demo-registry/nginx-demo:$BUILD_ID
+options:
+  logging: CLOUD_LOGGING_ONLY
