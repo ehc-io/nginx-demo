@@ -6,7 +6,8 @@ steps:
 - name: 'gcr.io/cloud-builders/docker'
   args: ['push', 'us-central1-docker.pkg.dev/infinite-bruin-439311-d5/demo-registry/nginx-demo:$BUILD_ID']
 # Deploy container image to Cloud Run
-
+- name: 'gcr.io/cloud-builders/gcloud'
+  args: ['run', 'deploy', 'nginx-demo', '--image', 'us-central1-docker.pkg.dev/infinite-bruin-439311-d5/demo-registry/nginx-demo:$BUILD_ID', '--network' , 'default-vpc', '--subnet', 'frontend',  '--network-tags', 'allow-http', '--region', 'us-central1', '--platform', 'managed', '--allow-unauthenticated', '--vpc-egress', 'all-traffic', '--ingress', 'internal-and-cloud-load-balancing', '--region', 'us-central1' ]
 images:
 - us-central1-docker.pkg.dev/infinite-bruin-439311-d5/demo-registry/nginx-demo:$BUILD_ID
 options:
